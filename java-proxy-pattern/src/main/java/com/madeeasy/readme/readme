@@ -1,0 +1,100 @@
+**Java Proxy Pattern: Controlling Access to Objects**
+
+The Proxy Design Pattern is used to provide a surrogate or placeholder for another object to control access to it.
+It allows you to add an extra layer of control over object access, often for reasons like lazy loading, access control, or monitoring.
+
+**Example:**
+
+
+   Client
+     |
+     v
+   Image
+     |
+     v
+ ImageProxy --> RealImage
+
+
+
+Here's an example of a proxy pattern in Java that controls access to an image loader:
+
+```java
+// Subject Interface (Image)
+interface Image {
+    void display();
+}
+
+// Real Subject (Concrete Image)
+class RealImage implements Image {
+    private String filename;
+
+    public RealImage(String filename) {
+        this.filename = filename;
+        loadFromDisk();
+    }
+
+    private void loadFromDisk() {
+        System.out.println("Loading image: " + filename);
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Displaying image: " + filename);
+    }
+}
+
+// Proxy (ImageProxy)
+class ImageProxy implements Image {
+    private RealImage realImage;
+    private String filename;
+
+    public ImageProxy(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
+    public void display() {
+        if (realImage == null) {
+            realImage = new RealImage(filename);
+        }
+        realImage.display();
+    }
+}
+
+// Client Code
+public class ProxyExample {
+    public static void main(String[] args) {
+        Image image1 = new ImageProxy("image1.jpg");
+        Image image2 = new ImageProxy("image2.jpg");
+
+        image1.display(); // ImageProxy loads and displays image1.jpg
+        image2.display(); // ImageProxy loads and displays image2.jpg
+    }
+}
+```
+
+**How to Identify When to Apply the Proxy Design Pattern:**
+
+1. **Access Control:** When you need to control or manage access to an object, especially in cases where you
+ want to restrict or conditionally allow access.
+
+2. **Lazy Loading:** If you want to defer the creation or loading of expensive objects until they are actually needed.
+
+3. **Logging and Monitoring:** When you want to add logging, monitoring, or other cross-cutting concerns without
+ modifying the original object's code.
+
+**Where to Apply the Proxy Design Pattern:**
+
+- **Virtual Proxies:** Lazy-loading large or expensive objects only when needed.
+
+- **Remote Proxies:** Controlling access to remote objects or resources.
+
+- **Protection Proxies:** Implementing access control and permission checks.
+
+- **Cache Proxies:** Caching frequently used results to improve performance.
+
+- **Logging Proxies:** Adding logging, metrics, or monitoring to objects.
+
+By applying the Proxy Design Pattern, you can add an additional layer of control, flexibility, and functionality
+to objects without altering their core logic, making it useful for scenarios where you need to manage object access,
+ improve performance, or enhance functionality.
